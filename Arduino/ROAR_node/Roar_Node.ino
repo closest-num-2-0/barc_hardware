@@ -19,8 +19,8 @@ class Car {
 
   private:
 
-    const int MOTOR_PIN = 11;
-    const int SERVO_PIN = 10;
+    const int MOTOR_PIN = 3;
+    const int SERVO_PIN = 2;
 
     const int ch1 = 4;
     const int ch2 = 5;
