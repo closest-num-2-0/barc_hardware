@@ -50,7 +50,7 @@ void setup() {
 void loop() {
   car.readReceiver();
 
-  if (SteeringIn < 500) {
+  if (steeringIn < 500) {
     mode = MASTER_MODE;
   } else {
     mode = SLAVE_MODE;
