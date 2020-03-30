@@ -4,10 +4,10 @@
 int throttleIn = 1500; //global variable for throttle
 int steeringIn = 1500; //global variable for steering
 
-const int MASTER_MODE = 0;
-const int SLAVE_MODE = 1;
+const int MANUAL_MODE = 0;
+const int AUTONOMOUS_MODE = 1;
 
-int mode = SLAVE_MODE;
+int mode = AUTONOMOUS_MODE;
 
 class Car {
   public:
@@ -51,19 +51,19 @@ void loop() {
   car.readReceiver();
 
   if (steeringIn < 500) {
-    mode = MASTER_MODE;
+    mode = MANUAL_MODE;
   } else {
-    mode = SLAVE_MODE;
+    mode = AUTONOMOUS_MODE;
   }
 
-  if (mode == MASTER_MODE) {
+  if (mode == MANUAL_MODE) {
     car.writeToActuators();
     Serial.print(car.saturateMotor(throttleIn));
     Serial.print(" ");
     Serial.print(car.saturateServo(steeringIn));
     Serial.println();
   }
-  else if (mode == MASTER_MODE) {
+  else if (mode == MANUAL_MODE) {
     char input[100];
     byte size = Serial.readBytes(input, 100);
     input[size] = 0;
