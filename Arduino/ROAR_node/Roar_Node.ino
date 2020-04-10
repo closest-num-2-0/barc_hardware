@@ -7,7 +7,7 @@ int steeringIn = 1500; //global variable for steering
 const int MANUAL_MODE = 0;
 const int AUTONOMOUS_MODE = 1;
 
-int mode = AUTONOMOUS_MODE;
+int mode = MANUAL_MODE;
 
 class Car {
   public:
@@ -50,11 +50,7 @@ void setup() {
 void loop() {
   car.readReceiver();
 
-  if (steeringIn < 500) {
-    mode = MANUAL_MODE;
-  } else {
-    mode = AUTONOMOUS_MODE;
-  }
+  mode = MANUAL_MODE;
 
   if (mode == MANUAL_MODE) {
     car.writeToActuators();
