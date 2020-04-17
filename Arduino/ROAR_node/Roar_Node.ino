@@ -42,7 +42,7 @@ Car car;
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   car.initArduino();
 }
 
@@ -79,7 +79,7 @@ void Car::initArduino() {
 }
 
 void Car::readReceiver() {
-  throttleIn = pulseIn (ch2, HIGH);
+  throttleIn = pulseIn (ch2, HIGH); //replace with hardware timers.
   steeringIn = pulseIn (ch1, HIGH);
 }
 
