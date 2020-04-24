@@ -3,17 +3,14 @@
 
 int throttleIn = 1500; //global variable for throttle
 int steeringIn = 1500; //global variable for steering
-
-const int MANUAL_MODE = 0;
-const int AUTONOMOUS_MODE = 1;
-
-int mode = MANUAL_MODE;
+int recieverStateVar = LOW;
 
 class Car {
   public:
     void initArduino();
     void readReceiver();
     void writeToActuators();
+    void receiverState();
     float saturateMotor(float x);
     float saturateServo(float x);
 
@@ -24,6 +21,7 @@ class Car {
 
     const int ch1 = 4;
     const int ch2 = 5;
+    const int receiver_state_pin = 30;
 
     Servo throttle;
     Servo steering;
@@ -48,18 +46,17 @@ void setup() {
 
 //Main Program
 void loop() {
-  car.readReceiver();
-
-  mode = MANUAL_MODE;
-
-  if (mode == MANUAL_MODE) {
+  car.receiverState();
+  Serial.print(recieverStateVar);
+  if (recieverStateVar == LOW) {
+    car.readReceiver();
     car.writeToActuators();
     Serial.print(car.saturateMotor(throttleIn));
     Serial.print(" ");
     Serial.print(car.saturateServo(steeringIn));
     Serial.println();
   }
-  else if (mode == MANUAL_MODE) {
+  else if (recieverStateVar == HIGH) {
     char input[100];
     byte size = Serial.readBytes(input, 100);
     input[size] = 0;
@@ -76,6 +73,11 @@ void Car::initArduino() {
   steering.attach(SERVO_PIN);
   pinMode(ch1, INPUT);
   pinMode(ch2, INPUT);
+  pinMode(receiver_state_pin, INPUT);
+}
+
+void Car::receiverState() {
+  recieverStateVar = digitalRead(receiver_state_pin);
 }
 
 void Car::readReceiver() {
