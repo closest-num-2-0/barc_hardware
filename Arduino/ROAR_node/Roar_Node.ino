@@ -3,7 +3,7 @@
 
 int throttleIn = 1500; //global variable for throttle
 int steeringIn = 1500; //global variable for steering
-int recieverStateVar = LOW;
+int receiverStateVar = LOW;
 
 class Car {
   public:
@@ -11,6 +11,7 @@ class Car {
     void readReceiver();
     void writeToActuators();
     void receiverState();
+    void idling();
     float saturateMotor(float x);
     float saturateServo(float x);
 
@@ -47,24 +48,24 @@ void setup() {
 //Main Program
 void loop() {
   car.receiverState();
-  Serial.print(recieverStateVar);
-  if (recieverStateVar == LOW) {
-    car.readReceiver();
+  Serial.print(receiverStateVar);
+  if (receiverStateVar == LOW) {
+    car.readReceiver(); //reads reciever data.
     car.writeToActuators();
     Serial.print(car.saturateMotor(throttleIn));
     Serial.print(" ");
     Serial.print(car.saturateServo(steeringIn));
     Serial.println();
   }
-  else if (recieverStateVar == HIGH) {
-    char input[100];
-    byte size = Serial.readBytes(input, 100);
-    input[size] = 0;
-    char *s = strtok(input, " ");
-    if (s != NULL) throttleIn = atoi(s);
+  else if (receiverStateVar == HIGH) {
+    char receivedData[100]; //creates variable to store data from jetson
+    byte size = Serial.readBytes(receivedData, 100); //reads serial data into buffer and times out after 100ms
+    receivedData[size] = 0;
+    char *s = strtok(receivedData, "@& "); //allows string to be broken into tokens by " ".
+    if (s != NULL) throttleIn = atoi(s); //sets variable to received data and converts ASCII to integer if message is not empty
     s = strtok(NULL, " ");
-    if (s != NULL) steeringIn = atoi(s);
-    car.writeToActuators();
+    if (s != NULL) steeringIn = atoi(s); //sets variable to received data and converts ASCII to integer if message is not empty
+    car.writeToActuators(); //writes actuation variables to servo and ESC.
   }
 }
 
@@ -77,7 +78,7 @@ void Car::initArduino() {
 }
 
 void Car::receiverState() {
-  recieverStateVar = digitalRead(receiver_state_pin);
+  receiverStateVar = digitalRead(receiver_state_pin);
 }
 
 void Car::readReceiver() {
@@ -108,4 +109,9 @@ float Car::saturateServo(float x) {
 void Car::writeToActuators() {
   throttle.writeMicroseconds( (uint16_t) saturateMotor( throttleIn ) );
   steering.writeMicroseconds( (uint16_t) saturateServo( steeringIn ) );
+}
+
+void Car::idling() {
+  throttle.writeMicroseconds( (uint16_t) MOTOR_NEUTRAL );
+  steering.writeMicroseconds( (uint16_t) THETA_CENTER  );
 }
