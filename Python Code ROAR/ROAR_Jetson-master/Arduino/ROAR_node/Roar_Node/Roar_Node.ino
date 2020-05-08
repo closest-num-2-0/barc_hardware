@@ -3,9 +3,7 @@
 
 int throttleIn = 1500; //global variable for throttle
 int steeringIn = 1500; //global variable for steering
-int receiverStateVar = LOW;
-char receivedData[100]; //creates variable to store data from jetson (100 is byte size)
-char handshake = '&';
+int recieverStateVar = LOW;
 
 class Car {
   public:
@@ -13,7 +11,6 @@ class Car {
     void readReceiver();
     void writeToActuators();
     void receiverState();
-    void idling();
     float saturateMotor(float x);
     float saturateServo(float x);
 
@@ -50,34 +47,24 @@ void setup() {
 //Main Program
 void loop() {
   car.receiverState();
-  // Serial.print(receiverStateVar); Debugging purposes.
-  if (receiverStateVar == LOW) {
-    car.readReceiver(); //reads reciever data.
+  Serial.print(recieverStateVar);
+  if (recieverStateVar == LOW) {
+    car.readReceiver();
     car.writeToActuators();
     Serial.print(car.saturateMotor(throttleIn));
     Serial.print(" ");
     Serial.print(car.saturateServo(steeringIn));
-    Serial.print(" ");
-    Serial.print(receiverStateVar);
     Serial.println();
   }
-
-  // NEW REQUIRED FORMAT: "HANDSHAKE" "PWMTHROTTLE" "STEERINGIN"
-  // (neutral formatting): & 1500 1500
-  
-  else if (receiverStateVar == HIGH) {
-    byte size = Serial.readBytes(receivedData, 100); //reads serial data into buffer and times out after 100ms
-    receivedData[size] = 0; //end of the string can be specified with a 0.
-    char *s = strtok(receivedData, " "); //allows string to be broken into tokens by " ".
-    if (s[0] == handshake) {
-      s = strtok(NULL, " ");
-      if (s != NULL) throttleIn = atoi(s); //sets variable to received data and converts ASCII to integer if message is not empty
-      s = strtok(NULL, " ");
-      if (s != NULL) steeringIn = atoi(s); //sets variable to received data and converts ASCII to integer if message is not empty
-      car.writeToActuators(); //writes actuation variables to servo and ESC.
-    } else {
-      car.idling();
-    }
+  else if (recieverStateVar == HIGH) {
+    char input[100];
+    byte size = Serial.readBytes(input, 100);
+    input[size] = 0;
+    char *s = strtok(input, " ");
+    if (s != NULL) throttleIn = atoi(s);
+    s = strtok(NULL, " ");
+    if (s != NULL) steeringIn = atoi(s);
+    car.writeToActuators();
   }
 }
 
@@ -90,7 +77,7 @@ void Car::initArduino() {
 }
 
 void Car::receiverState() {
-  receiverStateVar = digitalRead(receiver_state_pin);
+  recieverStateVar = digitalRead(receiver_state_pin);
 }
 
 void Car::readReceiver() {
@@ -121,9 +108,4 @@ float Car::saturateServo(float x) {
 void Car::writeToActuators() {
   throttle.writeMicroseconds( (uint16_t) saturateMotor( throttleIn ) );
   steering.writeMicroseconds( (uint16_t) saturateServo( steeringIn ) );
-}
-
-void Car::idling() {
-  throttle.writeMicroseconds( (uint16_t) MOTOR_NEUTRAL );
-  steering.writeMicroseconds( (uint16_t) THETA_CENTER  );
 }
