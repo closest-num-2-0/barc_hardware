@@ -19,8 +19,8 @@ class Car {
 
     const int SERVO_PIN = 2;
     const int MOTOR_PIN = 3;
-    const int ch1 = 36;
-    const int ch2 = 38;
+    const int ch1 = 4;
+    const int ch2 = 5;
     const int MULTIPLEXER_PIN = 10;
     const int receiver_state_pin = 30;
 

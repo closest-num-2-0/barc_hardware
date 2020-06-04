@@ -109,8 +109,8 @@ void Car::receiverState() {
 }
 
 void Car::readReceiver() {
-  steering_read = pulseIn (ch1, HIGH);
-  throttle_read = pulseIn (ch2, HIGH);
+  steering_read = pulseIn (ch1, HIGH, 10000000UL);
+  throttle_read = pulseIn (ch2, HIGH, 10000000UL);
 }
 
 float Car::saturateMotor(float x) {
@@ -134,8 +134,8 @@ float Car::saturateServo(float x) {
 }
 
 void Car::writeToActuators() {
-  throttle.writeMicroseconds( (uint16_t) saturateMotor( throttle_write ) );
-  steering.writeMicroseconds( (uint16_t) saturateServo( steering_write ) );
+  throttle.writeMicroseconds( (uint16_t) ( throttle_write ) );
+  steering.writeMicroseconds( (uint16_t) ( steering_write ) );
 }
 
 void Car::idling() {
