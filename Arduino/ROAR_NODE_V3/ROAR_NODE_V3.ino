@@ -2,11 +2,15 @@ int TESTING_STATE = true; //test between receiving Nvidia Jetson Signal and Writ
 
 char receivedData[100]; //creates variable to store data from jetson (100 is byte size)
 char handshake = '&';
-int throttle_read = 1500;
-int steering_read = 1500;
-int throttle_write = 1500;
-int steering_write = 1500;
-int receiverStateVar = LOW;
+float throttle_read = 1500;
+float steering_read = 1500;
+float throttle_write = 1500;
+float steering_write = 1500;
+float receiverStateVar = LOW;
+float str_prev_2 = 1500;
+float str_prev_1 = 1500;
+float thr_prev_2 = 1500;
+float thr_prev_1 = 1500;
 
 #include "Servo.h"
 
@@ -21,7 +25,6 @@ int receiverStateVar = LOW;
 
 Servo servoChannel1;
 Servo servoChannel2;
-
 
 #define CHANNEL1_FLAG 1
 #define CHANNEL2_FLAG 2
@@ -56,35 +59,38 @@ void loop()
 
   if (bUpdateFlagsShared)
   {
-    noInterrupts();
+    //noInterrupts();
 
     bUpdateFlags = bUpdateFlagsShared;
 
     if (bUpdateFlags & CHANNEL1_FLAG)
     {
+      if (unChannel1In > 2500) {
+        unChannel1In = str_prev_1 - str_prev_2 + str_prev_1;
+      }
+      str_prev_2 = str_prev_1;
+      str_prev_1 = unChannel1In;
       unChannel1In = unChannel1InShared;
     }
 
     if (bUpdateFlags & CHANNEL2_FLAG)
     {
+      if (unChannel2In > 2500) {
+        unChannel2In = thr_prev_1 - thr_prev_2 + thr_prev_1;
+      }
+      str_prev_2 = str_prev_1;
+      str_prev_1 = unChannel1In;
       unChannel2In = unChannel2InShared;
     }
     bUpdateFlagsShared = 0;
 
-    interrupts();
+    //interrupts();
   }
 
-  if (bUpdateFlags & CHANNEL1_FLAG)
-  {
     Serial.println();
     Serial.print(unChannel1In);
     Serial.print(",");
-  }
-
-  if (bUpdateFlags & CHANNEL2_FLAG)
-  {
     Serial.print(unChannel2In);
-  }
 
 
   throttle_read = unChannel2In;
