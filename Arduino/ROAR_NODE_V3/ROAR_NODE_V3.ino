@@ -1,4 +1,4 @@
-int TESTING_STATE = false; //test between receiving Nvidia Jetson Signal and Writing Constant PWM
+int TESTING_STATE = true; //test between receiving Nvidia Jetson Signal and Writing Constant PWM
 
 char receivedData[100]; //creates variable to store data from jetson (100 is byte size)
 char handshake = '&';
@@ -65,21 +65,21 @@ void loop()
 
     if (bUpdateFlags & CHANNEL1_FLAG)
     {
-      if (unChannel1In > 2500) {
-        unChannel1In = str_prev_1 - str_prev_2 + str_prev_1;
-      }
-      str_prev_2 = str_prev_1;
-      str_prev_1 = unChannel1In;
+//      if (unChannel1In > 2025) {
+//        unChannel1In = str_prev_1 - str_prev_2 + str_prev_1;
+//      }
+//      str_prev_2 = str_prev_1;
+//      str_prev_1 = unChannel1In;
       unChannel1In = unChannel1InShared;
     }
 
     if (bUpdateFlags & CHANNEL2_FLAG)
     {
-      if (unChannel2In > 2500) {
-        unChannel2In = thr_prev_1 - thr_prev_2 + thr_prev_1;
-      }
-      str_prev_2 = str_prev_1;
-      str_prev_1 = unChannel1In;
+//      if (unChannel2In > 2025) {
+//        unChannel2In = thr_prev_1 - thr_prev_2 + thr_prev_1;
+//      }
+//      str_prev_2 = str_prev_1;
+//      str_prev_1 = unChannel1In;
       unChannel2In = unChannel2InShared;
     }
     bUpdateFlagsShared = 0;
@@ -92,10 +92,8 @@ void loop()
     Serial.print(",");
     Serial.print(unChannel2In);
 
-
   throttle_read = unChannel2In;
   steering_read = unChannel1In;
-
 
   if (receiverStateVar == LOW) {
     throttle_write = throttle_read;
