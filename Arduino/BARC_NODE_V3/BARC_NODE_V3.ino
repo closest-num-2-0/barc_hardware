@@ -4,7 +4,7 @@
 // re add support for additional sensors
 // enable full disabling of RC controller
 
-int TESTING_STATE = false; //test between receiving Nvidia Jetson Signal and Writing Constant PWM
+int TESTING_STATE = true; //test between receiving Nvidia Jetson Signal and Writing Constant PWM
 
 char receivedData[100]; //creates variable to store data from jetson (100 is byte size)
 char handshake = '&';
@@ -23,6 +23,10 @@ float thr_prev_1 = 1500;
 // Assign your channel in pins
 #define CHANNEL1_IN_PIN 2
 #define CHANNEL2_IN_PIN 3
+#define FL_IN_PIN 22
+#define FR_IN_PIN 24
+#define BL_IN_PIN 26
+#define BR_IN_PIN 28
 #define RECEIVER_STATE_PIN 30
 
 // Assign your channel out pins
@@ -34,6 +38,10 @@ Servo servoChannel2;
 
 #define CHANNEL1_FLAG 1
 #define CHANNEL2_FLAG 2
+#define ENCODERFL_FLAG 3
+#define ENCODERFR_FLAG 4
+#define ENCODERBL_FLAG 5
+#define ENCODERBR_FLAG 6
 
 volatile uint32_t bUpdateFlagsShared;
 
@@ -51,6 +59,10 @@ void setup()
 
   attachInterrupt(CHANNEL1_IN_PIN, calcChannel1, CHANGE);
   attachInterrupt(CHANNEL2_IN_PIN, calcChannel2, CHANGE);
+  attachInterrupt(FL_IN_PIN, calcChannelFL, CHANGE);
+  attachInterrupt(FR_IN_PIN, calcChannelFR, CHANGE);
+  attachInterrupt(BL_IN_PIN, calcChannelBL, CHANGE);
+  attachInterrupt(BR_IN_PIN, calcChannelBR, CHANGE);
 
 }
 
@@ -71,7 +83,7 @@ void loop()
 
     if (bUpdateFlags & CHANNEL1_FLAG)
     {
-      if (unChannel1In > 2500) {
+      if (unChannel1In > 2000) {
         unChannel1In = str_prev_1 - str_prev_2 + str_prev_1;
       }
       str_prev_2 = str_prev_1;
@@ -81,7 +93,7 @@ void loop()
 
     if (bUpdateFlags & CHANNEL2_FLAG)
     {
-      if (unChannel2In > 2500) {
+      if (unChannel2In > 2000) {
         unChannel2In = thr_prev_1 - thr_prev_2 + thr_prev_1;
       }
       str_prev_2 = str_prev_1;
@@ -172,5 +184,64 @@ void calcChannel2()
   {
     unChannel2InShared = (uint32_t)(micros() - ulStart);
     bUpdateFlagsShared |= CHANNEL2_FLAG;
+  }
+}
+
+void calcChannelFL()
+{
+  static uint32_t ulStart;
+
+  if (digitalRead(CHANNEL2_IN_PIN))
+  {
+    ulStart = micros();
+  }
+  else
+  {
+    unChannel2InShared = (uint32_t)(micros() - ulStart);
+    bUpdateFlagsShared |= ENCODERFL_FLAG;
+  }
+}
+void calcChannelFR()
+{
+  static uint32_t ulStart;
+
+  if (digitalRead(CHANNEL2_IN_PIN))
+  {
+    ulStart = micros();
+  }
+  else
+  {
+    unChannel2InShared = (uint32_t)(micros() - ulStart);
+    bUpdateFlagsShared |= ENCODERFR_FLAG;
+  }
+}
+
+void calcChannelBL()
+{
+  static uint32_t ulStart;
+
+  if (digitalRead(CHANNEL2_IN_PIN))
+  {
+    ulStart = micros();
+  }
+  else
+  {
+    unChannel2InShared = (uint32_t)(micros() - ulStart);
+    bUpdateFlagsShared |= ENCODERBL_FLAG;
+  }
+}
+
+void calcChannelBR()
+{
+  static uint32_t ulStart;
+
+  if (digitalRead(CHANNEL2_IN_PIN))
+  {
+    ulStart = micros();
+  }
+  else
+  {
+    unChannel2InShared = (uint32_t)(micros() - ulStart);
+    bUpdateFlagsShared |= ENCODERBR_FLAG;
   }
 }
