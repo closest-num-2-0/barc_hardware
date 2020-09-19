@@ -24,8 +24,9 @@ int encoder_servo_state_A = 0;
 int encoder_servo_state_B = 0;
 int encoder_servo_state_C = 0;
 int direction_servo = 0;
-float servo_angle = 0;
 int servo_enc_count = 0;
+float servo_angle = 0;
+float steering_angle = 0;
 
 //wheel encoder variables
 int wheel_enc_count_FL = 0;
@@ -33,23 +34,23 @@ int wheel_enc_count_FR = 0;
 int wheel_enc_count_BL = 0;
 int wheel_enc_count_BR = 0;
 float time_initial = 0;
-float FL_time_prev = 0;
-float FR_time_prev = 0;
-float BL_time_prev = 0;
-float BR_time_prev = 0;
-float FL_time_pres = 0;
-float FR_time_pres = 0;
-float BL_time_pres = 0;
-float BR_time_pres = 0;
+volatile uint32_t FL_time_prev = 0;
+volatile uint32_t FR_time_prev = 0;
+volatile uint32_t BL_time_prev = 0;
+volatile uint32_t BR_time_prev = 0;
+volatile uint32_t FL_time_pres = 0;
+volatile uint32_t FR_time_pres = 0;
+volatile uint32_t BL_time_pres = 0;
+volatile uint32_t BR_time_pres = 0;
 
 #define CHANNEL1_IN_PIN 2
 #define CHANNEL2_IN_PIN 3
 #define CHANNEL1_OUT_PIN 4
 #define CHANNEL2_OUT_PIN 5
-#define FL_IN_PIN 22
-#define FR_IN_PIN 24
-#define BL_IN_PIN 26
-#define BR_IN_PIN 28
+#define FL_IN_PIN 42
+#define FR_IN_PIN 44
+#define BL_IN_PIN 46
+#define BR_IN_PIN 48
 #define RECEIVER_STATE_PIN 30
 #define PHASE_A_servo 32
 #define PHASE_B_servo 34
@@ -156,36 +157,44 @@ void loop() {
   }
 
   servo_angle = servo_enc_count * 0.3515625; //change to calculate function that calculates all angles and velocities
+  steering_angle = servo_angle * 0.65;
+
   Serial.println();
   Serial.print(CHANNEL_1_IN_PWM);
   Serial.print(" , ");
   Serial.print(CHANNEL_2_IN_PWM);
   Serial.print(" , ");
-  Serial.print(servo_angle);
+  Serial.print(steering_angle);
   Serial.print(" , ");
-  Serial.print(servo_enc_count);
-  Serial.print(" , ");
-//  Serial.print(encoder_servo_state_A);
-//  Serial.print(" , ");
-//  Serial.print(encoder_servo_state_B);
-//  Serial.print(" , ");
-//  Serial.print(encoder_servo_state_C);
-//  Serial.print(" , ");
-//  Serial.print(FL_DT);
-//  Serial.print(" , ");
-//  Serial.print(FR_DT);
-//  Serial.print(" , ");
-//  Serial.print(BL_DT);
-//  Serial.print(" , ");
-//  Serial.print(BR_DT);
-//  Serial.print(" , ");
-  Serial.print(wheel_enc_count_FL);
-  Serial.print(" , ");
-  Serial.print(wheel_enc_count_FR);
-  Serial.print(" , ");
-  Serial.print(wheel_enc_count_BL);
-  Serial.print(" , ");
-  Serial.print(wheel_enc_count_BR);
+  //  Serial.print(" , ");
+  //  Serial.print(FL_DT);
+  //  Serial.print(" , ");
+  //  Serial.print(FR_DT);
+  //  Serial.print(" , ");
+  //  Serial.print(BL_DT);
+  //  Serial.print(" , ");
+  //  Serial.print(BR_DT);
+  //  Serial.print(" , ");
+  //  Serial.print(wheel_enc_count_FL);
+  //  Serial.print(" , ");
+  //  Serial.print(wheel_enc_count_FR);
+  //  Serial.print(" , ");
+  //  Serial.print(wheel_enc_count_BL);
+  //  Serial.print(" , ");
+  //  Serial.print(wheel_enc_count_BR);
+
+  if (TESTING_STATE = true) {
+    Serial.print("servo_ang: ");
+    Serial.print(servo_angle);
+    Serial.print(" , ss_enc_cnt: ");
+    Serial.print(servo_enc_count);
+    Serial.print(" , ss_enc_A_state: ");
+    Serial.print(encoder_servo_state_A);
+    Serial.print(" , ss_enc_B_state: ");
+    Serial.print(encoder_servo_state_B);
+    Serial.print(" , ss_enc_C_state: ");
+    Serial.print(encoder_servo_state_C);
+  }
 
   steering_read = CHANNEL_1_IN_PWM;
   throttle_read = CHANNEL_2_IN_PWM;
@@ -199,8 +208,8 @@ void loop() {
   } else if (receiverStateVar == HIGH) {
 
     if (TESTING_STATE = true) {
-      throttle_write = 1540;
-      steering_write = 1900;
+      throttle_write = 1500;
+      steering_write = 1500;
     } else {
 
       // NEW REQUIRED FORMAT: "HANDSHAKE" "PWMTHROTTLE" "STEERINGIN"
