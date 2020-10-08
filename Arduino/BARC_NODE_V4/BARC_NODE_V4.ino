@@ -166,22 +166,22 @@ void loop() {
   Serial.print(" , ");
   Serial.print(steering_angle);
   Serial.print(" , ");
-  //  Serial.print(" , ");
-  //  Serial.print(FL_DT);
-  //  Serial.print(" , ");
-  //  Serial.print(FR_DT);
-  //  Serial.print(" , ");
-  //  Serial.print(BL_DT);
-  //  Serial.print(" , ");
-  //  Serial.print(BR_DT);
-  //  Serial.print(" , ");
-  //  Serial.print(wheel_enc_count_FL);
-  //  Serial.print(" , ");
-  //  Serial.print(wheel_enc_count_FR);
-  //  Serial.print(" , ");
-  //  Serial.print(wheel_enc_count_BL);
-  //  Serial.print(" , ");
-  //  Serial.print(wheel_enc_count_BR);
+//  Serial.print(" , ");
+//  Serial.print(FL_DT);
+//  Serial.print(" , ");
+//  Serial.print(FR_DT);
+//  Serial.print(" , ");
+//  Serial.print(BL_DT);
+//  Serial.print(" , ");
+//  Serial.print(BR_DT);
+//  Serial.print(" , ");
+  Serial.print(wheel_enc_count_FL);
+  Serial.print(" , ");
+  Serial.print(wheel_enc_count_FR);
+  Serial.print(" , ");
+  Serial.print(wheel_enc_count_BL);
+  Serial.print(" , ");
+  Serial.print(wheel_enc_count_BR);
 
   if (TESTING_STATE = true) {
     Serial.print("servo_ang: ");
