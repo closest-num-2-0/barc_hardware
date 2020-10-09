@@ -47,10 +47,10 @@ volatile uint32_t BR_time_pres = 0;
 #define CHANNEL2_IN_PIN 3
 #define CHANNEL1_OUT_PIN 4
 #define CHANNEL2_OUT_PIN 5
-#define FL_IN_PIN 42
-#define FR_IN_PIN 44
-#define BL_IN_PIN 46
-#define BR_IN_PIN 48
+#define FL_IN_PIN 22
+#define FR_IN_PIN 24
+#define BL_IN_PIN 26
+#define BR_IN_PIN 28
 #define RECEIVER_STATE_PIN 30
 #define PHASE_A_servo 32
 #define PHASE_B_servo 34
