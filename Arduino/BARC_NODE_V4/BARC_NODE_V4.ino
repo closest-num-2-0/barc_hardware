@@ -83,20 +83,20 @@ void setup() {
   servoChannel2.attach(CHANNEL2_OUT_PIN);
 
   pinMode(RECEIVER_STATE_PIN, INPUT);
-  pinMode(FL_IN_PIN, INPUT_PULLUP);
-  pinMode(FR_IN_PIN, INPUT_PULLUP);
-  pinMode(BL_IN_PIN, INPUT_PULLUP);
-  pinMode(BR_IN_PIN, INPUT_PULLUP);
+//  pinMode(FL_IN_PIN, INPUT_PULLUP);
+//  pinMode(FR_IN_PIN, INPUT_PULLUP);
+//  pinMode(BL_IN_PIN, INPUT_PULLUP);
+//  pinMode(BR_IN_PIN, INPUT_PULLUP);
   pinMode(PHASE_A_servo, INPUT_PULLUP);
   pinMode(PHASE_B_servo, INPUT_PULLUP);
   pinMode(PHASE_C_servo, INPUT_PULLUP);
 
   attachInterrupt(CHANNEL1_IN_PIN, MEASURE_CHANNEL_1, CHANGE);
   attachInterrupt(CHANNEL2_IN_PIN, MEASURE_CHANNEL_2, CHANGE);
-  attachInterrupt(FL_IN_PIN, MEASURE_FL, CHANGE);
-  attachInterrupt(FR_IN_PIN, MEASURE_FR, CHANGE);
-  attachInterrupt(BL_IN_PIN, MEASURE_BL, CHANGE);
-  attachInterrupt(BR_IN_PIN, MEASURE_BR, CHANGE);
+//  attachInterrupt(FL_IN_PIN, MEASURE_FL, CHANGE);
+//  attachInterrupt(FR_IN_PIN, MEASURE_FR, CHANGE);
+//  attachInterrupt(BL_IN_PIN, MEASURE_BL, CHANGE);
+//  attachInterrupt(BR_IN_PIN, MEASURE_BR, CHANGE);
   attachInterrupt(PHASE_A_servo, calc_A_servo, CHANGE);
   attachInterrupt(PHASE_B_servo, calc_B_servo, CHANGE);
   attachInterrupt(PHASE_C_servo, calc_C_servo, CHANGE);
@@ -135,21 +135,21 @@ void loop() {
       unChannel2In = CHANNEL_2_IN_PWM;
     }
 
-    if (bUpdateFlags & ENCODER_FL_FLAG) {
-      FL_DT = FL_time_pres - FL_time_prev;
-    }
-
-    if (bUpdateFlags & ENCODER_FR_FLAG) {
-      FR_DT = FL_time_pres - FR_time_prev;
-    }
-
-    if (bUpdateFlags & ENCODER_BL_FLAG) {
-      BL_DT = BL_time_pres - BL_time_prev;
-    }
-
-    if (bUpdateFlags & ENCODER_BR_FLAG) {
-      BR_DT = BR_time_pres - BR_time_prev;
-    }
+//    if (bUpdateFlags & ENCODER_FL_FLAG) {
+//      FL_DT = FL_time_pres - FL_time_prev;
+//    }
+//
+//    if (bUpdateFlags & ENCODER_FR_FLAG) {
+//      FR_DT = FL_time_pres - FR_time_prev;
+//    }
+//
+//    if (bUpdateFlags & ENCODER_BL_FLAG) {
+//      BL_DT = BL_time_pres - BL_time_prev;
+//    }
+//
+//    if (bUpdateFlags & ENCODER_BR_FLAG) {
+//      BR_DT = BR_time_pres - BR_time_prev;
+//    }
 
     bUpdateFlagsShared = 0;
 
@@ -165,34 +165,25 @@ void loop() {
   Serial.print(CHANNEL_2_IN_PWM);
   Serial.print(" , ");
   Serial.print(steering_angle);
-  Serial.print(" , ");
 //  Serial.print(" , ");
-//  Serial.print(FL_DT);
+//  Serial.print(wheel_enc_count_FL);
 //  Serial.print(" , ");
-//  Serial.print(FR_DT);
+//  Serial.print(wheel_enc_count_FR);
 //  Serial.print(" , ");
-//  Serial.print(BL_DT);
+//  Serial.print(wheel_enc_count_BL);
 //  Serial.print(" , ");
-//  Serial.print(BR_DT);
-//  Serial.print(" , ");
-  Serial.print(wheel_enc_count_FL);
-  Serial.print(" , ");
-  Serial.print(wheel_enc_count_FR);
-  Serial.print(" , ");
-  Serial.print(wheel_enc_count_BL);
-  Serial.print(" , ");
-  Serial.print(wheel_enc_count_BR);
+//  Serial.print(wheel_enc_count_BR);
 
   if (TESTING_STATE = true) {
-    Serial.print("servo_ang: ");
+    Serial.print("ang");
     Serial.print(servo_angle);
     Serial.print(" , ss_enc_cnt: ");
     Serial.print(servo_enc_count);
-    Serial.print(" , ss_enc_A_state: ");
+    Serial.print(" ,enc_A ");
     Serial.print(encoder_servo_state_A);
-    Serial.print(" , ss_enc_B_state: ");
+    Serial.print(" ,enc_B");
     Serial.print(encoder_servo_state_B);
-    Serial.print(" , ss_enc_C_state: ");
+    Serial.print(" ,enc_C");
     Serial.print(encoder_servo_state_C);
   }
 
@@ -331,30 +322,30 @@ void calc_C_servo() {
   servo_enc_count += direction_servo;
 }
 
-void MEASURE_FL() {
-  wheel_enc_count_FL++;
-  FL_time_prev = FL_time_pres;
-  FL_time_pres = micros();
-  bUpdateFlagsShared |= ENCODER_FL_FLAG;
-}
-
-void MEASURE_FR() {
-  wheel_enc_count_FR++;
-  FR_time_prev = FR_time_pres;
-  FR_time_pres = micros();
-  bUpdateFlagsShared |= ENCODER_FR_FLAG;
-}
-
-void MEASURE_BL() {
-  wheel_enc_count_BL++;
-  BL_time_prev = BL_time_pres;
-  BL_time_pres = micros();
-  bUpdateFlagsShared |= ENCODER_BL_FLAG;
-}
-
-void MEASURE_BR() {
-  wheel_enc_count_BR++;
-  BR_time_prev = BR_time_pres;
-  BR_time_pres = micros();
-  bUpdateFlagsShared |= ENCODER_BR_FLAG;
-}
+//void MEASURE_FL() {
+//  wheel_enc_count_FL++;
+//  FL_time_prev = FL_time_pres;
+//  FL_time_pres = micros();
+//  bUpdateFlagsShared |= ENCODER_FL_FLAG;
+//}
+//
+//void MEASURE_FR() {
+//  wheel_enc_count_FR++;
+//  FR_time_prev = FR_time_pres;
+//  FR_time_pres = micros();
+//  bUpdateFlagsShared |= ENCODER_FR_FLAG;
+//}
+//
+//void MEASURE_BL() {
+//  wheel_enc_count_BL++;
+//  BL_time_prev = BL_time_pres;
+//  BL_time_pres = micros();
+//  bUpdateFlagsShared |= ENCODER_BL_FLAG;
+//}
+//
+//void MEASURE_BR() {
+//  wheel_enc_count_BR++;
+//  BR_time_prev = BR_time_pres;
+//  BR_time_pres = micros();
+//  bUpdateFlagsShared |= ENCODER_BR_FLAG;
+//}
